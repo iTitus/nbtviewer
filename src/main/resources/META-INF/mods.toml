@@ -1,0 +1,24 @@
+modLoader = "javafml"
+loaderVersion = "[32,)"
+license = "MIT"
+
+[[mods]]
+modId = "nbtviewer"
+version = "${file.jarVersion}"
+displayName = "NBT Viewer"
+authors = "iTitus"
+description = "View NBT of Itemstacks"
+
+[[dependencies.nbtviewer]]
+modId = "forge"
+mandatory = true
+versionRange = "[32,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.nbtviewer]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16,)"
+ordering = "NONE"
+side = "BOTH"
