@@ -6,8 +6,11 @@ license = "MIT"
 modId = "nbtviewer"
 version = "${file.jarVersion}"
 displayName = "NBT Viewer"
+displayURL = "https://github.com/iTitus/nbtviewer"
 authors = "iTitus"
-description = "View NBT of Itemstacks"
+description = '''
+View NBT of Itemstacks
+'''
 
 [[dependencies.nbtviewer]]
 modId = "forge"
