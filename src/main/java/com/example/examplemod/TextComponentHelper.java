@@ -41,20 +41,17 @@ public final class TextComponentHelper {
         List<ITextComponent> extracted = extract(text);
         if (!extracted.isEmpty()) {
             ITextComponent current = new StringTextComponent("");
-            boolean hasSiblings = false;
             for (ITextComponent t : extracted) {
                 if (t instanceof StringTextComponent && "\n".equals(((StringTextComponent) t).getText())) {
                     lines.add(current);
                     current = new StringTextComponent("");
-                    hasSiblings = false;
                     continue;
                 }
 
                 current.getSiblings().add(t);
-                hasSiblings = true;
             }
 
-            if (hasSiblings) {
+            if (!current.getSiblings().isEmpty()) {
                 lines.add(current);
             }
         }
