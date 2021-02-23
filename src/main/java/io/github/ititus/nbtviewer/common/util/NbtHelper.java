@@ -1,4 +1,4 @@
-package io.github.ititus.nbtviewer;
+package io.github.ititus.nbtviewer.common.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;

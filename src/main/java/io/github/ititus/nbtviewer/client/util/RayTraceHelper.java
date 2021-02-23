@@ -1,4 +1,4 @@
-package io.github.ititus.nbtviewer;
+package io.github.ititus.nbtviewer.client.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerController;

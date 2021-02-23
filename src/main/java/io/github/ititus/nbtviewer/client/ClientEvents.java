@@ -1,5 +1,10 @@
-package io.github.ititus.nbtviewer;
+package io.github.ititus.nbtviewer.client;
 
+import io.github.ititus.nbtviewer.NbtViewer;
+import io.github.ititus.nbtviewer.client.gui.screen.NbtViewerScreen;
+import io.github.ititus.nbtviewer.client.util.KeyHelper;
+import io.github.ititus.nbtviewer.common.util.NbtHelper;
+import io.github.ititus.nbtviewer.common.util.TextComponentHelper;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.api.distmarker.Dist;
@@ -33,7 +38,7 @@ public class ClientEvents {
             "key.categories.nbtviewer"
     );
 
-    @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = NbtViewer.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class Lifecycle {
 
         @SubscribeEvent
@@ -43,7 +48,7 @@ public class ClientEvents {
         }
     }
 
-    @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
+    @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = NbtViewer.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class Forge {
 
         @SubscribeEvent(priority = EventPriority.LOW)

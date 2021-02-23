@@ -1,6 +1,9 @@
-package io.github.ititus.nbtviewer;
+package io.github.ititus.nbtviewer.client.gui.screen;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import io.github.ititus.nbtviewer.client.util.RayTraceHelper;
+import io.github.ititus.nbtviewer.common.util.NbtHelper;
+import io.github.ititus.nbtviewer.common.util.TextComponentHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
