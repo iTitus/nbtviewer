@@ -1,4 +1,4 @@
-package com.example.examplemod;
+package io.github.ititus.nbtviewer;
 
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -40,18 +40,27 @@ public final class TextComponentHelper {
 
         List<ITextComponent> extracted = extract(text);
         if (!extracted.isEmpty()) {
-            ITextComponent current = new StringTextComponent("");
+            ITextComponent current = null;
             for (ITextComponent t : extracted) {
                 if (t instanceof StringTextComponent && "\n".equals(((StringTextComponent) t).getText())) {
-                    lines.add(current);
-                    current = new StringTextComponent("");
+                    if (current == null) {
+                        lines.add(new StringTextComponent(""));
+                    } else {
+                        lines.add(current);
+                        current = null;
+                    }
+
                     continue;
                 }
 
-                current.getSiblings().add(t);
+                if (current == null) {
+                    current = t;
+                } else {
+                    current.getSiblings().add(t);
+                }
             }
 
-            if (!current.getSiblings().isEmpty()) {
+            if (current != null) {
                 lines.add(current);
             }
         }

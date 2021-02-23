@@ -1,4 +1,4 @@
-package com.example.examplemod;
+package io.github.ititus.nbtviewer;
 
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
