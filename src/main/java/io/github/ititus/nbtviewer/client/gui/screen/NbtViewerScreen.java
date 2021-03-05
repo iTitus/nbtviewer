@@ -57,7 +57,7 @@ public class NbtViewerScreen extends Screen {
         Optional<INBT> optNbt;
         if (r instanceof BlockRayTraceResult) {
             BlockPos pos = ((BlockRayTraceResult) r).getPos();
-            if (!world.isBlockLoaded(pos)) {
+            if (!world.isBlockPresent(pos)) {
                 return;
             }
 
