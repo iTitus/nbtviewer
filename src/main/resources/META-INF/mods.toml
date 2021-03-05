@@ -1,5 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[34,)"
+issueTrackerURL = "https://github.com/iTitus/nbtviewer/issues"
 license = "MIT"
 
 [[mods]]
@@ -7,6 +8,7 @@ modId = "nbtviewer"
 version = "${file.jarVersion}"
 displayName = "NBT Viewer"
 displayURL = "https://github.com/iTitus/nbtviewer"
+updateJSONURL = "https://raw.githubusercontent.com/iTitus/nbtviewer/main/update.json"
 authors = "iTitus"
 description = '''
 View NBT of Items, Entities and Block Entities

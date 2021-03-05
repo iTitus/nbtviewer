@@ -1,0 +1,20 @@
+{
+  "homepage": "https://github.com/iTitus/nbtviewer/releases",
+  "1.16.5": {
+    "1.16.3-1.0.0": "Initial release"
+  },
+  "1.16.4": {
+    "1.16.3-1.0.0": "Initial release"
+  },
+  "1.16.3": {
+    "1.16.3-1.0.0": "Initial release"
+  },
+  "promos": {
+    "1.16.5-latest": "1.16.3-1.0.0",
+    "1.16.5-recommended": "1.16.3-1.0.0",
+    "1.16.4-latest": "1.16.3-1.0.0",
+    "1.16.4-recommended": "1.16.3-1.0.0",
+    "1.16.3-latest": "1.16.3-1.0.0",
+    "1.16.3-recommended": "1.16.3-1.0.0"
+  }
+}
