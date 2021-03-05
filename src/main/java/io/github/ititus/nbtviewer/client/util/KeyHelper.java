@@ -4,9 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.client.settings.KeyModifier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 public final class KeyHelper {
+
+    private static final Logger L = LogManager.getLogger();
 
     private KeyHelper() {
     }
@@ -50,9 +54,24 @@ public final class KeyHelper {
                 case MOUSE:
                     return GLFW.glfwGetMouseButton(handle, kb.getKey().getKeyCode()) == GLFW.GLFW_PRESS;
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            L.warn("Unable to check keybind status of {}", toString(kb), e);
         }
 
         return false;
+    }
+
+    public static String toString(KeyBinding kb) {
+        if (kb == null) {
+            return "null";
+        }
+
+        return kb.getClass().getSimpleName() + "{" +
+                "description=" + kb.getKeyDescription() +
+                ", key=" + kb.getKey() +
+                ", category=" + kb.getKeyCategory() +
+                ", modifier=" + kb.getKeyModifier() +
+                ", conflictContext=" + kb.getKeyConflictContext() +
+                '}';
     }
 }

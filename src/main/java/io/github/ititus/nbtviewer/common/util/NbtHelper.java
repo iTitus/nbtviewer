@@ -5,10 +5,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.tileentity.TileEntity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 
 public final class NbtHelper {
+
+    private static final Logger L = LogManager.getLogger();
 
     private NbtHelper() {
     }
@@ -31,7 +35,8 @@ public final class NbtHelper {
             if (!e.writeUnlessRemoved(nbt)) {
                 return Optional.empty();
             }
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            L.warn("Unable to read entity nbt of {}", e, ex);
             return Optional.empty();
         }
 
@@ -46,7 +51,8 @@ public final class NbtHelper {
         CompoundNBT nbt = new CompoundNBT();
         try {
             nbt = tile.write(nbt);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            L.warn("Unable to read tile entity nbt of {}", tile, e);
             return Optional.empty();
         }
 
