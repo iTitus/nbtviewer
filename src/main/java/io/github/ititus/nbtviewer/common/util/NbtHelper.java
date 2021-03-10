@@ -32,7 +32,7 @@ public final class NbtHelper {
 
         CompoundNBT nbt = new CompoundNBT();
         try {
-            if (!e.writeUnlessRemoved(nbt)) {
+            if (!e.saveAsPassenger(nbt)) {
                 return Optional.empty();
             }
         } catch (Exception ex) {
@@ -50,7 +50,7 @@ public final class NbtHelper {
 
         CompoundNBT nbt = new CompoundNBT();
         try {
-            nbt = tile.write(nbt);
+            nbt = tile.save(nbt);
         } catch (Exception e) {
             L.warn("Unable to read tile entity nbt of {}", tile, e);
             return Optional.empty();

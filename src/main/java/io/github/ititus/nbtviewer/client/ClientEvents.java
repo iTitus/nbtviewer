@@ -58,7 +58,7 @@ public class ClientEvents {
             }
 
             NbtHelper.getNbt(event.getItemStack())
-                    .map(nbt -> nbt.toFormattedComponent(" ", 0))
+                    .map(nbt -> nbt.getPrettyDisplay(" ", 0))
                     .map(TextComponentHelper::splitLines)
                     .ifPresent(event.getToolTip()::addAll);
         }
@@ -69,7 +69,7 @@ public class ClientEvents {
                 return;
             }
 
-            while (INSPECT_WORLD.isPressed()) {
+            while (INSPECT_WORLD.consumeClick()) {
                 NbtViewerScreen.tryOpen();
             }
         }

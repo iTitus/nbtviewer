@@ -24,7 +24,7 @@ public final class KeyHelper {
     public static boolean isActive(KeyBinding kb) {
         if (kb == null) {
             return false;
-        } else if (kb.isKeyDown()) {
+        } else if (kb.isDown()) {
             return true;
         } else if (kb.isConflictContextAndModifierActive()) {
             return isKeyPressed(kb);
@@ -40,19 +40,19 @@ public final class KeyHelper {
      * @return true if the key is pressed, otherwise false
      */
     public static boolean isKeyPressed(KeyBinding kb) {
-        if (kb == null || kb.getKey().getKeyCode() == InputMappings.INPUT_INVALID.getKeyCode()) {
+        if (kb == null || kb.getKey().getValue() == InputMappings.UNKNOWN.getValue()) {
             return false;
         }
 
         try {
-            long handle = Minecraft.getInstance().getMainWindow().getHandle();
+            long handle = Minecraft.getInstance().getWindow().getWindow();
             switch (kb.getKey().getType()) {
                 case KEYSYM:
-                    return InputMappings.isKeyDown(handle, kb.getKey().getKeyCode());
+                    return InputMappings.isKeyDown(handle, kb.getKey().getValue());
                 case SCANCODE:
                     return false;
                 case MOUSE:
-                    return GLFW.glfwGetMouseButton(handle, kb.getKey().getKeyCode()) == GLFW.GLFW_PRESS;
+                    return GLFW.glfwGetMouseButton(handle, kb.getKey().getValue()) == GLFW.GLFW_PRESS;
             }
         } catch (Exception e) {
             L.warn("Unable to check keybind status of {}", toString(kb), e);
@@ -67,9 +67,9 @@ public final class KeyHelper {
         }
 
         return kb.getClass().getSimpleName() + "{" +
-                "description=" + kb.getKeyDescription() +
+                "description=" + kb.getName() +
                 ", key=" + kb.getKey() +
-                ", category=" + kb.getKeyCategory() +
+                ", category=" + kb.getCategory() +
                 ", modifier=" + kb.getKeyModifier() +
                 ", conflictContext=" + kb.getKeyConflictContext() +
                 '}';

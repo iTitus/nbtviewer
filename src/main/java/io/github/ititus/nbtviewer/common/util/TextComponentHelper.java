@@ -19,7 +19,7 @@ public final class TextComponentHelper {
 
         LinkedList<ITextComponent> list = new LinkedList<>();
 
-        ITextComponent copy = text.deepCopy();
+        ITextComponent copy = text.copy();
         for (Iterator<ITextComponent> it = copy.getSiblings().iterator(); it.hasNext(); ) {
             ITextComponent next = it.next();
             list.addAll(extract(next));

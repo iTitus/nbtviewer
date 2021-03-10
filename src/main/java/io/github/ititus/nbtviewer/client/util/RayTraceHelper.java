@@ -20,40 +20,40 @@ public final class RayTraceHelper {
 
     public static Optional<RayTraceResult> rayTraceFromPlayerView() {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.objectMouseOver != null && mc.objectMouseOver.getType() == RayTraceResult.Type.ENTITY) {
-            return Optional.of(mc.objectMouseOver);
+        if (mc.hitResult != null && mc.hitResult.getType() == RayTraceResult.Type.ENTITY) {
+            return Optional.of(mc.hitResult);
         }
 
-        Entity renderViewEntity = mc.getRenderViewEntity();
+        Entity renderViewEntity = mc.getCameraEntity();
         if (renderViewEntity == null) {
             return Optional.empty();
         }
 
-        PlayerController playerController = mc.playerController;
+        PlayerController playerController = mc.gameMode;
         if (playerController == null) {
             return Optional.empty();
         }
 
-        return Optional.of(rayTrace(renderViewEntity, playerController.getBlockReachDistance(), false, 0.0f));
+        return Optional.of(rayTrace(renderViewEntity, playerController.getPickRange(), false, 0.0f));
     }
 
     private static RayTraceResult rayTrace(Entity start, float reach, boolean fluids, float partialTicks) {
         Minecraft mc = Minecraft.getInstance();
-        boolean blockHit = mc.objectMouseOver != null && mc.objectMouseOver.getType() == RayTraceResult.Type.BLOCK;
+        boolean blockHit = mc.hitResult != null && mc.hitResult.getType() == RayTraceResult.Type.BLOCK;
 
         Vector3d eyePos = start.getEyePosition(partialTicks);
-        Vector3d lookVec = start.getLook(partialTicks);
+        Vector3d lookVec = start.getViewVector(partialTicks);
 
         Vector3d traceEnd;
         if (blockHit) {
-            traceEnd = mc.objectMouseOver.getHitVec();
+            traceEnd = mc.hitResult.getLocation();
         } else {
             traceEnd = eyePos.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
         }
 
-        World world = start.getEntityWorld();
+        World world = start.getCommandSenderWorld();
         AxisAlignedBB bound = new AxisAlignedBB(eyePos, traceEnd);
-        EntityRayTraceResult r = ProjectileHelper.rayTraceEntities(
+        EntityRayTraceResult r = ProjectileHelper.getEntityHitResult(
                 world,
                 start,
                 eyePos,
@@ -76,6 +76,6 @@ public final class RayTraceHelper {
                 fluids ? RayTraceContext.FluidMode.ANY : RayTraceContext.FluidMode.NONE,
                 start
         );
-        return world.rayTraceBlocks(ctx);
+        return world.clip(ctx);
     }
 }

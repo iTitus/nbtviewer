@@ -35,11 +35,11 @@ public class NbtViewerScreen extends Screen {
 
     public static void tryOpen() {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.isGamePaused() || mc.currentScreen != null) {
+        if (mc.isPaused() || mc.screen != null) {
             return;
         }
 
-        World world = mc.world;
+        World world = mc.level;
         if (world == null) {
             return;
         }
@@ -56,8 +56,8 @@ public class NbtViewerScreen extends Screen {
 
         Optional<INBT> optNbt;
         if (r instanceof BlockRayTraceResult) {
-            BlockPos pos = ((BlockRayTraceResult) r).getPos();
-            if (!world.isBlockPresent(pos)) {
+            BlockPos pos = ((BlockRayTraceResult) r).getBlockPos();
+            if (!world.isLoaded(pos)) {
                 return;
             }
 
@@ -66,7 +66,7 @@ public class NbtViewerScreen extends Screen {
                 return;
             }
 
-            TileEntity tile = world.getChunk(pos).getTileEntity(pos);
+            TileEntity tile = world.getChunk(pos).getBlockEntity(pos);
             optNbt = NbtHelper.getNbt(tile);
         } else if (r instanceof EntityRayTraceResult) {
             Entity e = ((EntityRayTraceResult) r).getEntity();
@@ -76,10 +76,10 @@ public class NbtViewerScreen extends Screen {
         }
 
         optNbt
-                .map(nbt -> nbt.toFormattedComponent(" ", 0))
+                .map(nbt -> nbt.getPrettyDisplay(" ", 0))
                 .map(TextComponentHelper::splitLines)
                 .map(NbtViewerScreen::new)
-                .ifPresent(mc::displayGuiScreen);
+                .ifPresent(mc::setScreen);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class NbtViewerScreen extends Screen {
 
         @Override
         protected int getContentHeight() {
-            return Math.max(content.size() * font.FONT_HEIGHT, height - border);
+            return Math.max(content.size() * font.lineHeight, height - border);
         }
 
         @Override
@@ -114,7 +114,7 @@ public class NbtViewerScreen extends Screen {
                                  int mouseY) {
             for (ITextComponent line : content) {
                 drawString(mStack, font, line, left + border, relativeY, 0xFFFFFF);
-                relativeY += font.FONT_HEIGHT;
+                relativeY += font.lineHeight;
             }
         }
     }
