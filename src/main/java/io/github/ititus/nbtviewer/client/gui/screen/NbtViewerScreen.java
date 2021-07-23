@@ -7,6 +7,8 @@ import io.github.ititus.nbtviewer.common.util.ComponentHelper;
 import io.github.ititus.nbtviewer.common.util.NbtHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
@@ -88,7 +90,7 @@ public class NbtViewerScreen extends Screen {
         super.init();
 
         panel = new NbtViewerPanel(width - 20, height - 30, 20, 10);
-        addRenderableOnly(panel);
+        addRenderableWidget(panel);
     }
 
     @Override
@@ -99,7 +101,7 @@ public class NbtViewerScreen extends Screen {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
-    private class NbtViewerPanel extends ScrollPanel {
+    private class NbtViewerPanel extends ScrollPanel implements NarratableEntry {
 
         public NbtViewerPanel(int width, int height, int top, int left) {
             super(minecraft, width, height, top, left);
@@ -116,6 +118,15 @@ public class NbtViewerScreen extends Screen {
                 GuiComponent.drawString(mStack, font, line, left + border, relativeY, 0xFFFFFF);
                 relativeY += font.lineHeight;
             }
+        }
+
+        @Override
+        public NarrationPriority narrationPriority() {
+            return NarrationPriority.NONE;
+        }
+
+        @Override
+        public void updateNarration(NarrationElementOutput output) {
         }
     }
 }

@@ -3,6 +3,7 @@ package io.github.ititus.nbtviewer.client.util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -59,7 +60,7 @@ public final class RayTraceHelper {
                 eyePos,
                 traceEnd,
                 bound,
-                null
+                EntitySelector.ENTITY_STILL_ALIVE
         );
         if (r != null) {
             return r;
