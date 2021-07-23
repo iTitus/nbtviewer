@@ -1,23 +1,24 @@
 package io.github.ititus.nbtviewer.client.gui.screen;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import io.github.ititus.nbtviewer.client.util.RayTraceHelper;
+import io.github.ititus.nbtviewer.common.util.ComponentHelper;
 import io.github.ititus.nbtviewer.common.util.NbtHelper;
-import io.github.ititus.nbtviewer.common.util.TextComponentHelper;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.INBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.gui.ScrollPanel;
 
 import java.util.List;
@@ -25,11 +26,11 @@ import java.util.Optional;
 
 public class NbtViewerScreen extends Screen {
 
-    private final List<ITextComponent> content;
+    private final List<Component> content;
     private NbtViewerPanel panel;
 
-    public NbtViewerScreen(List<ITextComponent> content) {
-        super(new TranslationTextComponent("gui.nbtviewer.title"));
+    public NbtViewerScreen(List<Component> content) {
+        super(new TranslatableComponent("gui.nbtviewer.title"));
         this.content = content;
     }
 
@@ -39,45 +40,45 @@ public class NbtViewerScreen extends Screen {
             return;
         }
 
-        World world = mc.level;
+        Level world = mc.level;
         if (world == null) {
             return;
         }
 
-        Optional<RayTraceResult> optResult = RayTraceHelper.rayTraceFromPlayerView();
+        Optional<HitResult> optResult = RayTraceHelper.rayTraceFromPlayerView();
         if (!optResult.isPresent()) {
             return;
         }
 
-        RayTraceResult r = optResult.get();
-        if (r.getType() == RayTraceResult.Type.MISS) {
+        HitResult r = optResult.get();
+        if (r.getType() == HitResult.Type.MISS) {
             return;
         }
 
-        Optional<INBT> optNbt;
-        if (r instanceof BlockRayTraceResult) {
-            BlockPos pos = ((BlockRayTraceResult) r).getBlockPos();
+        Optional<Tag> optNbt;
+        if (r instanceof BlockHitResult) {
+            BlockPos pos = ((BlockHitResult) r).getBlockPos();
             if (!world.isLoaded(pos)) {
                 return;
             }
 
             BlockState state = world.getBlockState(pos);
-            if (!state.hasTileEntity()) {
+            if (!state.hasBlockEntity()) {
                 return;
             }
 
-            TileEntity tile = world.getChunk(pos).getBlockEntity(pos);
+            BlockEntity tile = world.getChunk(pos).getBlockEntity(pos);
             optNbt = NbtHelper.getNbt(tile);
-        } else if (r instanceof EntityRayTraceResult) {
-            Entity e = ((EntityRayTraceResult) r).getEntity();
+        } else if (r instanceof EntityHitResult) {
+            Entity e = ((EntityHitResult) r).getEntity();
             optNbt = NbtHelper.getNbt(e);
         } else {
             return;
         }
 
         optNbt
-                .map(nbt -> nbt.getPrettyDisplay(" ", 0))
-                .map(TextComponentHelper::splitLines)
+                .map(nbt -> NbtHelper.toPrettyComponent(nbt, " "))
+                .map(ComponentHelper::splitLines)
                 .map(NbtViewerScreen::new)
                 .ifPresent(mc::setScreen);
     }
@@ -87,11 +88,11 @@ public class NbtViewerScreen extends Screen {
         super.init();
 
         panel = new NbtViewerPanel(width - 20, height - 30, 20, 10);
-        children.add(panel);
+        addRenderableOnly(panel);
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         renderBackground(matrixStack);
         drawCenteredString(matrixStack, font, title, width / 2, 10, 0xFFFFFF);
         panel.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -110,10 +111,9 @@ public class NbtViewerScreen extends Screen {
         }
 
         @Override
-        protected void drawPanel(MatrixStack mStack, int entryRight, int relativeY, Tessellator tess, int mouseX,
-                                 int mouseY) {
-            for (ITextComponent line : content) {
-                drawString(mStack, font, line, left + border, relativeY, 0xFFFFFF);
+        protected void drawPanel(PoseStack mStack, int entryRight, int relativeY, Tesselator tess, int mouseX, int mouseY) {
+            for (Component line : content) {
+                GuiComponent.drawString(mStack, font, line, left + border, relativeY, 0xFFFFFF);
                 relativeY += font.lineHeight;
             }
         }

@@ -1,27 +1,27 @@
 package io.github.ititus.nbtviewer.common.util;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.*;
 
-public final class TextComponentHelper {
+public final class ComponentHelper {
 
-    private TextComponentHelper() {
+    private ComponentHelper() {
     }
 
-    private static List<ITextComponent> extract(ITextComponent text) {
+    private static List<Component> extract(Component text) {
         if (text == null) {
             return Collections.emptyList();
         } else if (text.getSiblings().isEmpty()) {
             return Collections.singletonList(text);
         }
 
-        LinkedList<ITextComponent> list = new LinkedList<>();
+        LinkedList<Component> list = new LinkedList<>();
 
-        ITextComponent copy = text.copy();
-        for (Iterator<ITextComponent> it = copy.getSiblings().iterator(); it.hasNext(); ) {
-            ITextComponent next = it.next();
+        Component copy = text.copy();
+        for (Iterator<Component> it = copy.getSiblings().iterator(); it.hasNext(); ) {
+            Component next = it.next();
             list.addAll(extract(next));
             it.remove();
         }
@@ -31,20 +31,20 @@ public final class TextComponentHelper {
         return list;
     }
 
-    public static List<ITextComponent> splitLines(ITextComponent text) {
+    public static List<Component> splitLines(Component text) {
         if (text == null) {
             return Collections.emptyList();
         }
 
-        List<ITextComponent> lines = new ArrayList<>();
+        List<Component> lines = new ArrayList<>();
 
-        List<ITextComponent> extracted = extract(text);
+        List<Component> extracted = extract(text);
         if (!extracted.isEmpty()) {
-            ITextComponent current = null;
-            for (ITextComponent t : extracted) {
-                if (t instanceof StringTextComponent && "\n".equals(((StringTextComponent) t).getText())) {
+            Component current = null;
+            for (Component t : extracted) {
+                if (t instanceof TextComponent && "\n".equals(((TextComponent) t).getText())) {
                     if (current == null) {
-                        lines.add(new StringTextComponent(""));
+                        lines.add(new TextComponent(""));
                     } else {
                         lines.add(current);
                         current = null;

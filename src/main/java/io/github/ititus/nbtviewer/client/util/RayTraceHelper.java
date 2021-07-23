@@ -1,15 +1,15 @@
 package io.github.ititus.nbtviewer.client.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.PlayerController;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
@@ -18,9 +18,9 @@ public final class RayTraceHelper {
     private RayTraceHelper() {
     }
 
-    public static Optional<RayTraceResult> rayTraceFromPlayerView() {
+    public static Optional<HitResult> rayTraceFromPlayerView() {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.hitResult != null && mc.hitResult.getType() == RayTraceResult.Type.ENTITY) {
+        if (mc.hitResult != null && mc.hitResult.getType() == HitResult.Type.ENTITY) {
             return Optional.of(mc.hitResult);
         }
 
@@ -29,7 +29,7 @@ public final class RayTraceHelper {
             return Optional.empty();
         }
 
-        PlayerController playerController = mc.gameMode;
+        MultiPlayerGameMode playerController = mc.gameMode;
         if (playerController == null) {
             return Optional.empty();
         }
@@ -37,23 +37,23 @@ public final class RayTraceHelper {
         return Optional.of(rayTrace(renderViewEntity, playerController.getPickRange(), false, 0.0f));
     }
 
-    private static RayTraceResult rayTrace(Entity start, float reach, boolean fluids, float partialTicks) {
+    private static HitResult rayTrace(Entity start, float reach, boolean fluids, float partialTicks) {
         Minecraft mc = Minecraft.getInstance();
-        boolean blockHit = mc.hitResult != null && mc.hitResult.getType() == RayTraceResult.Type.BLOCK;
+        boolean blockHit = mc.hitResult != null && mc.hitResult.getType() == HitResult.Type.BLOCK;
 
-        Vector3d eyePos = start.getEyePosition(partialTicks);
-        Vector3d lookVec = start.getViewVector(partialTicks);
+        Vec3 eyePos = start.getEyePosition(partialTicks);
+        Vec3 lookVec = start.getViewVector(partialTicks);
 
-        Vector3d traceEnd;
+        Vec3 traceEnd;
         if (blockHit) {
             traceEnd = mc.hitResult.getLocation();
         } else {
             traceEnd = eyePos.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
         }
 
-        World world = start.getCommandSenderWorld();
-        AxisAlignedBB bound = new AxisAlignedBB(eyePos, traceEnd);
-        EntityRayTraceResult r = ProjectileHelper.getEntityHitResult(
+        Level world = start.getCommandSenderWorld();
+        AABB bound = new AABB(eyePos, traceEnd);
+        EntityHitResult r = ProjectileUtil.getEntityHitResult(
                 world,
                 start,
                 eyePos,
@@ -69,11 +69,11 @@ public final class RayTraceHelper {
             traceEnd = eyePos.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
         }
 
-        RayTraceContext ctx = new RayTraceContext(
+        ClipContext ctx = new ClipContext(
                 eyePos,
                 traceEnd,
-                RayTraceContext.BlockMode.OUTLINE,
-                fluids ? RayTraceContext.FluidMode.ANY : RayTraceContext.FluidMode.NONE,
+                ClipContext.Block.OUTLINE,
+                fluids ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE,
                 start
         );
         return world.clip(ctx);

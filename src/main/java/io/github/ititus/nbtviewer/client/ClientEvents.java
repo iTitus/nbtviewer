@@ -1,12 +1,12 @@
 package io.github.ititus.nbtviewer.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import io.github.ititus.nbtviewer.NbtViewer;
 import io.github.ititus.nbtviewer.client.gui.screen.NbtViewerScreen;
 import io.github.ititus.nbtviewer.client.util.KeyHelper;
+import io.github.ititus.nbtviewer.common.util.ComponentHelper;
 import io.github.ititus.nbtviewer.common.util.NbtHelper;
-import io.github.ititus.nbtviewer.common.util.TextComponentHelper;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
@@ -14,26 +14,26 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
 import org.lwjgl.glfw.GLFW;
 
 public class ClientEvents {
 
-    public static final KeyBinding INSPECT_WORLD = new KeyBinding(
+    public static final KeyMapping INSPECT_WORLD = new KeyMapping(
             "key.nbtviewer.inspect_world",
             KeyConflictContext.IN_GAME,
             KeyModifier.NONE,
-            InputMappings.Type.KEYSYM,
+            InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_I,
             "key.categories.nbtviewer"
     );
-    public static final KeyBinding INSPECT_ITEM = new KeyBinding(
+    public static final KeyMapping INSPECT_ITEM = new KeyMapping(
             "key.nbtviewer.inspect_item",
             KeyConflictContext.GUI,
             KeyModifier.NONE,
-            InputMappings.Type.KEYSYM,
+            InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_I,
             "key.categories.nbtviewer"
     );
@@ -58,8 +58,8 @@ public class ClientEvents {
             }
 
             NbtHelper.getNbt(event.getItemStack())
-                    .map(nbt -> nbt.getPrettyDisplay(" ", 0))
-                    .map(TextComponentHelper::splitLines)
+                    .map(tag -> NbtHelper.toPrettyComponent(tag, " "))
+                    .map(ComponentHelper::splitLines)
                     .ifPresent(event.getToolTip()::addAll);
         }
 
